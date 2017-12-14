@@ -2,43 +2,32 @@ var box = document.getElementById("box");
 var boxHeight = box.offsetHeight;
 var boxWidth = box.offsetWidth;
 
-//hardcode target as center
-//randomize later
-var targetX = boxWidth / 2;
-var targetY = boxHeight / 2;
+var targetX = boxWidth * Math.random();
+var targetY = boxHeight * Math.random();
 
-
-console.log( "box height: " + boxHeight );
-console.log( "box width: " + boxWidth );
 
 //calculate distance between current mouse pos and target
 var distance = function (x0, y0, x1, y1) {
-    var dist = Math.sqrt((x1-x0)**2 + (y1-y0)**2) / 5;
-    
-    if (dist > 100){
-       dist = 50;
-    }
-    else if (dist < 5){
-        dist = 5;
-    }
-    else if (dist < 100){
-        return dist / 2;
-    };
+    var dist = Math.sqrt((x1-x0)**2 + (y1-y0)**2);
     return dist;
 };
 
-
 var findIt = function(e) {
     var mouseDist = distance(e.clientX, e.clientY, targetX, targetY);
-    var lightness = 90 - mouseDist;
-    box.style.backgroundColor = 'hsl(25,100%,' + lightness + '%)';
-    console.log("dist: " + mouseDist);    
-    console.log("L: " + lightness);
+    var radius = distance(0,0, boxWidth, boxHeight);
+    var ratio = mouseDist/radius;
+    var lightness;
+    
+    if (ratio > 0.4){
+        lightness = 50;
+        box.style.backgroundColor = 'hsl(25,100%,' + lightness + '%)';
+    } else if (ratio < 0.05) {
+        box.style.backgroundColor = 'hsl(100, 100%, 85%)';
+    } else {
+        lightness = 90 - (ratio * 100);
+        box.style.backgroundColor = 'hsl(25,100%,' + lightness + '%)';
     };
-
-/*
-your OTHER FXNS
-*/
+};
 
 box.addEventListener("mousemove", findIt);
 
